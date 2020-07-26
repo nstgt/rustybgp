@@ -3192,12 +3192,18 @@ impl GobgpApi for Service {
                     let mut v6_prefix = 0;
 
                     for (_, entry) in t.roa.v4.iter() {
-                        v4_record += 1;
-                        v4_prefix += entry.len() as u32;
+                        let e: Vec<_> = entry.iter().filter(|e| e.source.address == sockaddr.ip()).collect();
+                        v4_record += e.len() as u32;
+                        if e.len() > 0 {
+                            v4_prefix += 1;
+                        }
                     }
                     for (_, entry) in t.roa.v6.iter() {
-                        v6_record += 1;
-                        v6_prefix += entry.len() as u32;
+                        let e: Vec<_> = entry.iter().filter(|e| e.source.address == sockaddr.ip()).collect();
+                        v6_record += e.len() as u32;
+                        if e.len() > 0 {
+                            v6_prefix += 1;
+                        }
                     }
 
                     v.push(api::ListRpkiResponse {
